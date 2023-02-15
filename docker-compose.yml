@@ -1,0 +1,15 @@
+version: '3'
+services:
+  node:
+    build: ./node
+    container_name: web-node
+    working_dir: /mnt/web/client
+    ports:
+      - "53000:3000"
+    tty: true
+    #volumes:
+      #- ./volume/web/server:/mnt/web/server/
+      #- ./volume/web/client:/mnt/web/client/
+    #command: ["./wait-for-it.sh", "api:5000", "--", "npm", "start"]
+    #command: ["npm", "start"]
+ 
