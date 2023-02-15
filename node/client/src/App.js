@@ -14,30 +14,43 @@ function App() {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     },
-    body: JSON.stringify({size: clusterSize}),
+    body: JSON.stringify({
+      'size': clusterSize,
+      'term': 'A',
+      'mask': false,
+    }),
   };
 
   console.log(requestOptions)
 
   const url = "/clustering";
   const GetClusteringResults = (e) => {
-    setClusterSize(e.target.value)
     fetch(url, requestOptions)
       .then(response => response.json())
       .then(data => setResult(data))
   };
 
+  const GetClusterSize = (e) => {
+    setClusterSize(e.target.value)
+  }
+
+
   return (
     <div>
       <div className="flex">
         <div className="flex-none w-32 p-10">
-          TEST-v2
+          TEST-v3
         </div>
         <div className="flex-none p-10 ...">
           <div className="flex flex-col h-24">
             <div className="flex">
               <div className="flex flex-none w-64 h-24">
-                <input type="range" name="range1" min="10" max="30" onChange={GetClusteringResults} />
+                <input type="range" name="range1" min="10" max="30" onChange={GetClusterSize} />
+              </div>
+              <div className="flex-initial w-64 ...">
+                <button onClick={GetClusteringResults}>
+                  実行
+                </button>
               </div>
               <div className="flex-initial w-64 ...">
                 cluster_size={clusterSize}

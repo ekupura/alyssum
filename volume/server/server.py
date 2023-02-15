@@ -19,6 +19,8 @@ result = ClusteringResult()
 
 class Item(BaseModel):
     size: Union[str, int]
+    term: str
+    mask: bool
 
 
 @app.get("/")
@@ -28,10 +30,14 @@ async def root():
 
 @app.post("/clustering")
 def clustering(item: Item):
+    # init
     size = 30 if not item.size else int(item.size)
     # setting
-    # query
+    result.load_sentence_data(term=item.term)
+    result.load_clustering_result(term=item.term, mask=item.mask)
+    # process query
     result_df = result.do_query(cluster_size=size)
     color = result_df["Color"].to_list()
+    # make response
     responses = {"cluster": result_df["Number"].to_list(), "token": result_df["Token"].to_list(), "color": color}
     return responses
