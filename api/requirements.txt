@@ -2,3 +2,5 @@ fire
 seaborn
 fastapi
 uvicorn
+tqdm
+numpy

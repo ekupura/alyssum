@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function HeatmapLine(props) {
-  const Render = (token, color, idx) => {
+  const Render = (token, color) => {
     return token.map((t, jdx) => {
       return <span style={{backgroundColor: color[jdx]}}>{t}</span>
     });
@@ -12,7 +12,7 @@ export function HeatmapLine(props) {
   // {data && <div>{data.cluster}</div>}
   return (
       <div>
-        {props && <div>{Render(props.token, props.color, props.idx)}</div>}
+        {props && <div>{Render(props.token, props.color)}</div>}
       </div>
   );
 }

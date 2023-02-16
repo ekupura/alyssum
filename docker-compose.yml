@@ -5,7 +5,7 @@ services:
     container_name: web-api
     working_dir: /mnt/web/server/
     ports:
-      - "55000:5000"
+      - "5000:5000"
     volumes:
       - ./volume/server:/mnt/web/server
     tty: true
@@ -16,11 +16,7 @@ services:
     container_name: web-node
     working_dir: /mnt/web/client
     ports:
-      - "53000:3000"
+      - "3000:3000"
     tty: true
-    #volumes:
-      #- ./volume/web/server:/mnt/web/server/
-      #- ./volume/web/client:/mnt/web/client/
-    #command: ["./wait-for-it.sh", "api:5000", "--", "npm", "start"]
-    #command: ["npm", "start"]
+    command: ["npm", "start"]
  

@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import HeatmapLine from "./HeatmapLine";
 
 export function Heatmap(props) {
-  const Render = (data) => {
-    return data.cluster.map((value, idx) => {
-      return <p><HeatmapLine token={data.token[idx]} color={data.color[idx]} idx={idx}/></p>
-    });
+  const Render = () => {
+    return (
+      props.result.cluster.map((c, idx) => {
+        if (c !== props.number) {
+          return 0
+        } else {
+          return (
+            <div>
+              <p><HeatmapLine token={props.result.token[idx]} color={props.result.color[idx]}/></p>
+            </div>
+          );
+        }
+      }).filter(e => e).slice(0, 3)
+    );
   }
 
-  // {data ? <div>{data.cluster}</div> : <button onClick={GetData}>データを取得</button>}
-  // {data ? <div>Hello?, {data.cluster} </div> : <div> none </div>}
-  // {data && <div>{data.cluster}</div>}
   return (
       <div>
-        {props && <div>{Render(props.result)}</div>}
+        {props && <div>{Render()}</div>}
       </div>
   );
 }

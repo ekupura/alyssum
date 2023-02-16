@@ -21,4 +21,5 @@ class ClusteringResult:
 
     def do_query(self, cluster_size):
         select_df = self.cluster_df[self.cluster_df["Size"] == cluster_size]
+        # select_df = select_df[select_df["Number"] == cluster_number]
         return pd.merge(select_df, self.data_df, on="Idx")

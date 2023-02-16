@@ -37,7 +37,7 @@ def clustering(item: Item):
     result.load_clustering_result(term=item.term, mask=item.mask)
     # process query
     result_df = result.do_query(cluster_size=size)
-    color = result_df["Color"].to_list()
+    color = result_df["Color"].to_list() if not item.mask else result_df["Mask_Color"].to_list()
     # make response
     responses = {"cluster": result_df["Number"].to_list(), "token": result_df["Token"].to_list(), "color": color}
     return responses

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Heatmap from "./Heatmap";
 import ClusterNumber from "./ClusterNumber";
+import {Inbox} from "./Inbox";
 
 function App() {
   const [clusterSize, setClusterSize] = useState('');
@@ -34,7 +35,7 @@ function App() {
     setClusterSize(e.target.value)
   }
 
-
+  /*
   return (
     <div>
       <div className="flex">
@@ -67,6 +68,12 @@ function App() {
           </div>
         </div>
       </div>
+    </div>
+  );
+   */
+  return (
+    <div>
+      <Inbox/>
     </div>
   );
 }
