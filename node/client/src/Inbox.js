@@ -7,6 +7,7 @@ export function Inbox(props){
   const [clusterSize, setClusterSize] = useState(10);
   const [mask, setMask] = useState(false);
   const [term, setTerm] = useState('A');
+  const [question, setQuestion] = useState('Y14_1213');
 
   const requestOptions = {
     method: 'POST',
@@ -19,6 +20,7 @@ export function Inbox(props){
       'size': clusterSize,
       'term': term,
       'mask': mask,
+      'question': question,
     }),
   };
 
@@ -42,11 +44,15 @@ export function Inbox(props){
     setTerm(selectTerm)
   };
 
+  const SetQuestion = (selectQuestion, e) => {
+    setQuestion(selectQuestion)
+  };
+
   const HeatmapList = () => {
     const list = [];
     for (let idx = 0; idx < clusterSize; idx++) {
       list.push(
-        <div className="h-24 col-span-3 bg-white border border-gray-300">
+        <div className="h-36 col-span-3 bg-white border border-gray-300">
           <div className="p-2">
             <Heatmap result={result} number={idx + 1}/>
           </div>
@@ -235,20 +241,24 @@ export function Inbox(props){
           </button>
           <div className="flex flex-col flex-grow p-4 overflow-auto">
             <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300"
-                    onClick={() => SetTerm("A")}>
-              <span className="leading-none">項目A</span>
+                    onClick={() => SetQuestion("Y14_1213")}>
+              <span className="leading-none">Y14_1213</span>
             </button>
             <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300"
-                    onClick={() => SetTerm("B")}>
-              <span className="leading-none">項目B</span>
+                    onClick={() => SetQuestion("Y14_1224")}>
+              <span className="leading-none">Y14_1224</span>
             </button>
             <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300"
-                    onClick={() => SetTerm("C")}>
-              <span className="leading-none">項目C</span>
+                    onClick={() => SetQuestion("Y14_2115")}>
+              <span className="leading-none">Y14_2115</span>
             </button>
             <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300"
-                    onClick={() => SetTerm("D")}>
-              <span className="leading-none">項目D</span>
+                    onClick={() => SetQuestion("Y14_2214")}>
+              <span className="leading-none">Y14_2214</span>
+            </button>
+            <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300"
+                    onClick={() => SetQuestion("Y14_2223")}>
+              <span className="leading-none">Y14_2223</span>
             </button>
             <a
               className="flex items-center flex-shrink-0 h-10 px-3 mt-auto text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
@@ -274,7 +284,7 @@ export function Inbox(props){
         </div>
         <div className="flex flex-col flex-grow">
           <div className="flex items-center flex-shrink-0 h-16 px-8 border-b border-gray-300">
-            <h1 className="text-lg font-medium">項目{term}</h1>
+            <h1 className="text-lg font-medium">問題{question}, 項目{term}</h1>
             <input type="range" className="flex items-center justify-center h-10 w-32 px-4 ml-auto text-sm font-medium rounded hover:bg-gray-300"
                    min="3" max="30" onChange={GetClusterSize}/>
             <div className="flex items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-white">
@@ -283,6 +293,22 @@ export function Inbox(props){
             <button className="flex items-center justify-center h-10 w-32 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
                     onClick={SetMask}>
               Mask={mask.toString()}
+            </button>
+            <button className="flex items-center justify-center h-10 w-10 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+                    onClick={() => SetTerm("A")}>
+              A
+            </button>
+            <button className="flex items-center justify-center h-10 w-10 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+                    onClick={() => SetTerm("B")}>
+              B
+            </button>
+            <button className="flex items-center justify-center h-10 w-10 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+                    onClick={() => SetTerm("C")}>
+              C
+            </button>
+            <button className="flex items-center justify-center h-10 w-10 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+                    onClick={() => SetTerm("D")}>
+              D
             </button>
             <button className="flex items-center justify-center h-10 w-32 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
                     onClick={GetClusteringResults}>

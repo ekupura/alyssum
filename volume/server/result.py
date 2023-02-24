@@ -10,14 +10,14 @@ class ClusteringResult:
         self.load_clustering_result(term="A", mask=False)
         self.load_sentence_data(term="A")
 
-    def load_clustering_result(self, term="A", mask=False):
+    def load_clustering_result(self, question="Y14_1213", term="A", mask=False):
         if mask:
-            self.cluster_df = pd.read_pickle("data/masked_{}.xz.pkl".format(term), compression="xz")
+            self.cluster_df = pd.read_pickle("data/{}_analytic_high_masked_{}.xz.pkl".format(question, term), compression="xz")
         else:
-            self.cluster_df = pd.read_pickle("data/cluster_{}.xz.pkl".format(term), compression="xz")
+            self.cluster_df = pd.read_pickle("data/{}_analytic_high_cluster_{}.xz.pkl".format(question, term), compression="xz")
 
-    def load_sentence_data(self, term="A"):
-        self.data_df = pd.read_pickle("data/data_{}.xz.pkl".format(term), compression="xz")
+    def load_sentence_data(self, question="Y14_1213", term="A"):
+        self.data_df = pd.read_pickle("data/{}_analytic_high_data_{}.xz.pkl".format(question, term), compression="xz")
 
     def do_query(self, cluster_size):
         select_df = self.cluster_df[self.cluster_df["Size"] == cluster_size]

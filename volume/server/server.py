@@ -21,6 +21,7 @@ class Item(BaseModel):
     size: Union[str, int]
     term: str
     mask: bool
+    question: str
 
 
 @app.get("/")
@@ -33,8 +34,8 @@ def clustering(item: Item):
     # init
     size = 30 if not item.size else int(item.size)
     # setting
-    result.load_sentence_data(term=item.term)
-    result.load_clustering_result(term=item.term, mask=item.mask)
+    result.load_sentence_data(question=item.question, term=item.term)
+    result.load_clustering_result(question=item.question, term=item.term, mask=item.mask)
     # process query
     result_df = result.do_query(cluster_size=size)
     color = result_df["Color"].to_list() if not item.mask else result_df["Mask_Color"].to_list()
