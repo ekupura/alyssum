@@ -4,7 +4,7 @@ from typing import Union
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 import pandas as pd
-from result import ClusteringResult
+from result import ClusteringResult, ClusteringBeta
 
 app = FastAPI()
 app.add_middleware(
@@ -15,6 +15,7 @@ app.add_middleware(
     allow_headers=["*"]       # 追記により追加
 )
 result = ClusteringResult()
+beta = ClusteringBeta()
 
 
 class Item(BaseModel):
@@ -41,4 +42,20 @@ def clustering(item: Item):
     color = result_df["Color"].to_list() if not item.mask else result_df["Mask_Color"].to_list()
     # make response
     responses = {"cluster": result_df["Number"].to_list(), "token": result_df["Token"].to_list(), "color": color}
+    return responses
+
+
+@app.post("/distance")
+def distance(item: Item):
+    distance = 100 if not item.size else int(item.size)
+    # setting
+    beta.load_hierarchy(question=item.question, term=item.term, mask=item.mask)
+    beta.load_sentence_data(question=item.question, term=item.term)
+    # process query
+    result_df = beta.do_query(distance=distance)
+    color = result_df["Color"].to_list() if not item.mask else result_df["Mask_Color"].to_list()
+    cluster_size = max(result_df["Number"].to_list())
+    # make response
+    responses = {"cluster": result_df["Number"].to_list(), "token": result_df["Token"].to_list(),
+                 "color": color, "max": cluster_size}
     return responses

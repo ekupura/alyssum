@@ -14,7 +14,7 @@ export function Heatmap(props) {
             </div>
           );
         }
-      }).filter(e => e).slice(0, 5)
+      }).filter(e => e).slice(0, 3)
     );
   }
 

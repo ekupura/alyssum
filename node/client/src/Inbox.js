@@ -4,7 +4,7 @@ import Heatmap from "./Heatmap";
 
 export function Inbox(props){
   const [result, setResult] = useState();
-  const [clusterSize, setClusterSize] = useState(10);
+  const [clusterSize, setClusterSize] = useState(50);
   const [mask, setMask] = useState(false);
   const [term, setTerm] = useState('A');
   const [question, setQuestion] = useState('Y14_1213');
@@ -25,7 +25,7 @@ export function Inbox(props){
   };
 
 
-  const url = "/clustering";
+  const url = "/distance";
   const GetClusteringResults = (e) => {
     fetch(url, requestOptions)
       .then(response => response.json())
@@ -50,9 +50,10 @@ export function Inbox(props){
 
   const HeatmapList = () => {
     const list = [];
-    for (let idx = 0; idx < clusterSize; idx++) {
+    console.log(result)
+    for (let idx = 0; idx < result.max; idx++) {
       list.push(
-        <div className="h-36 col-span-3 bg-white border border-gray-300">
+        <div className="h-24 col-span-3 bg-white border border-gray-300">
           <div className="p-2">
             <Heatmap result={result} number={idx + 1}/>
           </div>
@@ -286,7 +287,7 @@ export function Inbox(props){
           <div className="flex items-center flex-shrink-0 h-16 px-8 border-b border-gray-300">
             <h1 className="text-lg font-medium">問題{question}, 項目{term}</h1>
             <input type="range" className="flex items-center justify-center h-10 w-32 px-4 ml-auto text-sm font-medium rounded hover:bg-gray-300"
-                   min="3" max="30" onChange={GetClusterSize}/>
+                   min="5" max="100" onChange={GetClusterSize}/>
             <div className="flex items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-white">
               Cluster size = {clusterSize}
             </div>
