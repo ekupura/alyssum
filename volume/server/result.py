@@ -6,42 +6,21 @@ from tqdm import tqdm
 from scipy.cluster.hierarchy import *
 
 
-class ClusteringResult:
-    def __init__(self):
-        self.cluster_df, self.data_df = None, None
-        self.load_clustering_result(term="A", mask=False)
-        self.load_sentence_data(term="A")
-
-    def load_clustering_result(self, question="Y14_1213", term="A", mask=False):
-        if mask:
-            self.cluster_df = pd.read_pickle("data/{}_analytic_high_masked_{}.xz.pkl".format(question, term), compression="xz")
-        else:
-            self.cluster_df = pd.read_pickle("data/{}_analytic_high_cluster_{}.xz.pkl".format(question, term), compression="xz")
-
-    def load_sentence_data(self, question="Y14_1213", term="A"):
-        self.data_df = pd.read_pickle("data/{}_analytic_high_data_{}.xz.pkl".format(question, term), compression="xz")
-
-    def do_query(self, cluster_size):
-        select_df = self.cluster_df[self.cluster_df["Size"] == cluster_size]
-        # select_df = select_df[select_df["Number"] == cluster_number]
-        return pd.merge(select_df, self.data_df, on="Idx")
-
-
 class ClusteringBeta:
     def __init__(self):
         self.hierarchy, self.data_df = None, None
         self.load_hierarchy()
         self.load_sentence_data()
 
-    def load_hierarchy(self, question="Y14_1213", term="A", mask=False):
-        with open("data/{}_analytic_high_hierarchy_{}.pkl".format(question, term), "rb") as f:
+    def load_hierarchy(self, setting="Y14_1213_100_A_2"):
+        with open("data/{}_counter_hierarchy.pkl".format(setting), "rb") as f:
             self.hierarchy = pickle.load(f)
 
-    def load_sentence_data(self, question="Y14_1213", term="A"):
-        self.data_df = pd.read_pickle("data/{}_analytic_high_data_{}.xz.pkl".format(question, term), compression="xz")
+    def load_sentence_data(self, setting="Y14_1213_100_A_2"):
+        self.data_df = pd.read_pickle("data/{}_counter_data.xz.pkl".format(setting), compression="xz")
 
-    def fcluster(self, distance):
-        cluster = fcluster(self.hierarchy, t=distance, criterion="distance")
+    def fcluster(self, size):
+        cluster = fcluster(self.hierarchy, t=size, criterion="maxclust")
         # sort by cluster number
         idx_list = [idx for idx in range(len(cluster))]
         cluster_list, idx_list = zip(*sorted(zip(cluster, idx_list)))
@@ -53,4 +32,3 @@ class ClusteringBeta:
         # clustering
         cluster_df = self.fcluster(distance)
         return pd.merge(cluster_df, self.data_df, on="Idx")
-        pass

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import HeatmapLine from "./HeatmapLine";
 
-export function Heatmap(props) {
+export function Setting(props) {
   const Render = () => {
     return (
       props.result.cluster.map((c, idx) => {
