@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 import pandas as pd
 from result import ClusteringBeta
+from glob import glob
+import os
 
 app = FastAPI()
 app.add_middleware(
@@ -43,4 +45,15 @@ def distance(item: Item):
     # make response
     responses = {"cluster": result_df["Number"].to_list(), "token": result_df["Token"].to_list(),
                  "color": color, "max": cluster_size}
+    return responses
+
+@app.get("/file")
+def file():
+    file_list = glob("data/*_counter_hierarchy.pkl")
+    project_list = []
+    for file_path in file_list:
+        file_path = os.path.splitext(os.path.basename(file_path))[0]
+        file_path = file_path.replace("_counter_hierarchy", "")
+        project_list.append(str(file_path))
+    responses = {"file": project_list}
     return responses
