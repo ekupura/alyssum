@@ -1,0 +1,28 @@
+import React, { useState, useEffect } from 'react';
+
+function Image(props) {
+    const [imageData, setImageData] = useState(null);
+    const url = `/${props.endpoint}/${props.setting}`
+
+    useEffect(() => {
+        fetch(url)
+            .then(response => response.blob())
+            .then(data => {
+                setImageData(URL.createObjectURL(data));
+            });
+    }, [url]);
+
+    return (
+        <div>
+            {imageData && (
+                <img
+                    src={imageData}
+                    alt="Example Image"
+                    className="w-auto h-auto rounded-lg shadow-lg"
+                />
+            )}
+        </div>
+    );
+}
+
+export default Image;

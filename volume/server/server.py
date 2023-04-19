@@ -7,6 +7,8 @@ import pandas as pd
 from result import ClusteringBeta
 from glob import glob
 import os
+from fastapi.responses import FileResponse
+
 
 app = FastAPI()
 app.add_middleware(
@@ -23,6 +25,10 @@ class Item(BaseModel):
     size: Union[str, int]
     setting: str
     mask: bool
+
+
+class ImageRequest(BaseModel):
+    setting: str
 
 
 @app.get("/")
@@ -55,5 +61,13 @@ def file():
         file_path = os.path.splitext(os.path.basename(file_path))[0]
         file_path = file_path.replace("_counter_hierarchy", "")
         project_list.append(str(file_path))
+    project_list = sorted(project_list)
     responses = {"file": project_list}
     return responses
+
+@app.get("/tsne/{setting}")
+def get_image(setting: str):
+    # Open the image file in binary mode
+    # Return the image as a FileResponse
+    file_path = "data/figure/{}_counter_tsne.png".format(setting)
+    return FileResponse(file_path, media_type="image/png")

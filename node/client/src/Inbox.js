@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Heatmap from "./Heatmap";
+import Image from "./Image";
+
 
 export function Inbox(props){
   const [result, setResult] = useState();
@@ -71,11 +73,9 @@ export function Inbox(props){
 
   const FileList = () => {
     return files.map(f => (
-      <div className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300">
-        <a onClick={() => setSetting(f)} key={f}>
-          {f}
-        </a>
-      </div>
+      <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" onClick={() => setSetting(f)} key={f}>
+        {f}
+      </button>
     ))
   }
 
@@ -106,17 +106,19 @@ export function Inbox(props){
       <div className="flex flex-col w-full">
         <div className="flex flex-col h-16 w-auto">
           <div className="flex items-center flex-shrink-0 h-16 px-8 border-b border-gray-300">
-            <h1 className="text-lg font-medium">問題{setting}</h1>
+            <h1 className="text-lg font-medium">{setting}</h1>
             <input type="range" className="flex items-center justify-center h-10 w-32 px-4 ml-auto text-sm font-medium rounded hover:bg-gray-300"
               min="2" max="30" onChange={GetClusterSize} />
             <div className="flex items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-white">
               Cluster size = {clusterSize}
             </div>
+            {/*
             <div className="flex">
               <div className="w-72">
                 <input type="text" value={setting} onChange={(e) => setSetting(e.target.value)} />
               </div>
             </div>
+            */}
             <button className="flex items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
               onClick={SetMask}>
               Justification Cue
@@ -133,9 +135,14 @@ export function Inbox(props){
               {FileList()}
             </div>
           </div>
-          <div className="flex-grow p-6 overflow-auto bg-gray-200">
-            <div className="grid grid-cols-3 gap-6">
-              {result && HeatmapList()}
+          <div className="flex flex-col w-full">
+            <div>
+              {result && <Image endpoint="tsne" setting={setting}/>}
+            </div>
+            <div className="flex-grow p-6 overflow-auto bg-gray-200">
+              <div className="grid grid-cols-3 gap-6">
+                {result && HeatmapList()}
+              </div>
             </div>
           </div>
         </div>
