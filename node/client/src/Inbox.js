@@ -10,7 +10,7 @@ export function Inbox(props){
   const [mask, setMask] = useState(false);
   const [term, setTerm] = useState('A');
   const [question, setQuestion] = useState('Y14_1213');
-  const [setting, setSetting] = useState('Y14_1213_A_2');
+  const [setting, setSetting] = useState('Y14_1213_A_R');
   const [files, setFiles] = useState(['']);
 
   const requestOptions = {
@@ -135,11 +135,18 @@ export function Inbox(props){
               {FileList()}
             </div>
           </div>
-          <div className="flex flex-col w-full">
-            <div>
-              {result && <Image endpoint="tsne" setting={setting}/>}
+          <div className="flex flex-col w-screen overflow-auto">
+            <div className="flex flex-row h-auto bg-gray-0 p-6">
+              {/*
+              <div className="flex-1">
+                {result && <Image endpoint="tsne" setting={setting}/>}
+              </div>
+              */}
+              <div className="flex-1">
+                {result && <Image endpoint="dendrogram" setting={setting} size={clusterSize}/>}
+              </div>
             </div>
-            <div className="flex-grow p-6 overflow-auto bg-gray-200">
+            <div className="flex-grow p-6 bg-gray-200">
               <div className="grid grid-cols-3 gap-6">
                 {result && HeatmapList()}
               </div>

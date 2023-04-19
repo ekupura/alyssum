@@ -53,6 +53,7 @@ def distance(item: Item):
                  "color": color, "max": cluster_size}
     return responses
 
+
 @app.get("/file")
 def file():
     file_list = glob("data/*_counter_hierarchy.pkl")
@@ -65,9 +66,18 @@ def file():
     responses = {"file": project_list}
     return responses
 
+
 @app.get("/tsne/{setting}")
-def get_image(setting: str):
+def get_tsne(setting: str):
     # Open the image file in binary mode
     # Return the image as a FileResponse
     file_path = "data/figure/{}_counter_tsne.png".format(setting)
+    return FileResponse(file_path, media_type="image/png")
+
+
+@app.get("/dendrogram/{setting}/{size}")
+def get_dendrogram(setting: str, size: Union[int, str] = 3):
+    # Open the image file in binary mode
+    # Return the image as a FileResponse
+    file_path = "data/figure/{}/{}_counter_dendrogram.png".format(size, setting)
     return FileResponse(file_path, media_type="image/png")
