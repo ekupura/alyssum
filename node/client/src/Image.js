@@ -18,7 +18,7 @@ function Image(props) {
                 <img
                     src={imageData}
                     alt="Example Image"
-                    className="w-auto h-auto rounded-lg shadow-lg"
+                    className="w-auto h-auto"
                 />
             )}
         </div>

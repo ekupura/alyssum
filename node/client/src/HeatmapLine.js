@@ -3,7 +3,7 @@ import React from 'react';
 export function HeatmapLine(props) {
   const Render = (token, color) => {
     return token.map((t, jdx) => {
-      return <span style={{backgroundColor: color[jdx]}}>{t}</span>
+      return <span className="text-sm" style={{backgroundColor: color[jdx]}}>{t}</span>
     });
   }
 

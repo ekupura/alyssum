@@ -42,6 +42,7 @@ def distance(item: Item):
     size = 10 if not item.size else int(item.size)
     beta.load_hierarchy(setting=item.setting)
     beta.load_sentence_data(setting=item.setting)
+    beta.load_cluster_data(setting=item.setting, size=size)
 
     # process query
     result_df = beta.do_query(distance=size)
@@ -79,5 +80,6 @@ def get_tsne(setting: str):
 def get_dendrogram(setting: str, size: Union[int, str] = 3):
     # Open the image file in binary mode
     # Return the image as a FileResponse
+    # file_path = "data/figure/{}/{}_counter_dendrogram.png".format(size, setting)
     file_path = "data/figure/{}/{}_counter_dendrogram.png".format(size, setting)
     return FileResponse(file_path, media_type="image/png")

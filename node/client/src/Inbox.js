@@ -8,8 +8,6 @@ export function Inbox(props){
   const [result, setResult] = useState();
   const [clusterSize, setClusterSize] = useState(10);
   const [mask, setMask] = useState(false);
-  const [term, setTerm] = useState('A');
-  const [question, setQuestion] = useState('Y14_1213');
   const [setting, setSetting] = useState('Y14_1213_A_R');
   const [files, setFiles] = useState(['']);
 
@@ -41,6 +39,42 @@ export function Inbox(props){
       .then(data => setFiles(data.file))
   }, []);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // ここに遅延実行する処理を書く
+      console.log(`Value changed to ${clusterSize}`);
+      GetClusteringResults();
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [clusterSize]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // ここに遅延実行する処理を書く
+      console.log(`Value changed to ${mask}`);
+      GetClusteringResults();
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [mask]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // ここに遅延実行する処理を書く
+      console.log(`Value changed to ${setting}`);
+      GetClusteringResults();
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [setting]);
+
   const url = "/distance";
   const GetClusteringResults = (e) => {
     fetch(url, requestOptions)
@@ -54,14 +88,19 @@ export function Inbox(props){
 
   const SetMask = (e) => {
     setMask(!mask)
+    GetClusteringResults()
+  };
+  
+  const SetSetting = (e) => {
+    setSetting(e)
+    GetClusteringResults()
   };
 
-  const HeatmapList = () => {
+  const renderHeatmapList = () => {
     const list = [];
-    console.log(result)
     for (let idx = 0; idx < result.max; idx++) {
       list.push(
-        <div className="col-span-3 bg-white border border-gray-300">
+        <div className="col-span-1 bg-white border border-gray-300">
           <div className="p-2">
             <Heatmap result={result} number={idx + 1}/>
           </div>
@@ -71,9 +110,13 @@ export function Inbox(props){
     return list;
   };
 
-  const FileList = () => {
+  const renderImage = () => {
+    return <Image endpoint="dendrogram" setting={setting} size={clusterSize} />;
+  }
+
+  const renderFileList = () => {
     return files.map(f => (
-      <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" onClick={() => setSetting(f)} key={f}>
+      <button className="flex items-center flex-shrink-0 h-10 px-2 text-sm font-medium rounded hover:bg-gray-300" onClick={() => SetSetting(f)} key={f}>
         {f}
       </button>
     ))
@@ -123,32 +166,30 @@ export function Inbox(props){
               onClick={SetMask}>
               Justification Cue
             </button>
-            <button className="flex items-center justify-center h-10 w-32 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
-              onClick={GetClusteringResults}>
-              実行
-            </button>
           </div>
         </div>
         <div className="flex flex-row h-full">
           <div className="flex flex-col w-56 border-r border-gray-300">
             <div className="flex flex-col flex-grow p-4 overflow-auto">
-              {FileList()}
+              {renderFileList()}
             </div>
           </div>
-          <div className="flex flex-col w-screen overflow-auto">
-            <div className="flex flex-row h-auto bg-gray-0 p-6">
+          <div className="flex flex-row w-screen overflow-auto">
+            <div className="flex flex-row h-auto bg-gray-0">
               {/*
               <div className="flex-1">
                 {result && <Image endpoint="tsne" setting={setting}/>}
               </div>
               */}
-              <div className="flex-1">
-                {result && <Image endpoint="dendrogram" setting={setting} size={clusterSize}/>}
+              <div className="flex-1 w-52 justify-center items-center">
+                {result && renderImage()}
               </div>
             </div>
-            <div className="flex-grow p-6 bg-gray-200">
-              <div className="grid grid-cols-3 gap-6">
-                {result && HeatmapList()}
+            <div className="flex flex-col flex-1 bg-gray-0">
+              <div className="flex-1 p-4 bg-gray-200">
+                <div className="grid grid-cols-1 gap-2">
+                  {result && renderHeatmapList()}
+                </div>
               </div>
             </div>
           </div>
