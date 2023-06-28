@@ -8,51 +8,57 @@ export function Heatmap(props) {
     setSlice(!slice)
   }
 
+
   const Render = () => {
-    const heatmap =
-      props.result.cluster.map((c, idx) => {
+    const heatmap = () => {
+      return props.result.cluster.map((c, idx) => {
         if (c !== props.number) {
           return 0
         } else {
           return (
             <div onClick={changeValue}>
-              <p><HeatmapLine token={props.result.token[idx]} color={props.result.color[idx]} /></p>
+              <p><HeatmapLine token={props.result.token[idx]} color={props.result.color[idx]} just={props.result.just[idx]} mask={props.mask} /></p>
             </div>
           );
         }
-      }).filter(e => e);
+      }).filter(e => e)
+    }
 
-    if (!slice) {
-      return (
-        <div className="col-span-1 bg-white border border-gray-300 h-auto p-1 px-2">
-          {slice ? heatmap.slice(0, 3) : heatmap}
-        </div>
-      );
-    } else if (parseInt(props.size, 10) < 11) {
-      return (
-        <div className="col-span-1 bg-white border border-gray-300 h-[86px] p-1 px-2">
-          {slice ? heatmap.slice(0, 3) : heatmap}
-        </div>
-      );
-    } else if (parseInt(props.size, 10) < 21) {
-      return (
-        <div className="col-span-1 bg-white border border-gray-300 h-[88px] p-1 px-2">
-          {slice ? heatmap.slice(0, 3) : heatmap}
-        </div>
-      );
-    } else {
-      return (
-        <div className="col-span-1 bg-white border border-gray-300 h-[89px] p-1 px-2">
-          {slice ? heatmap.slice(0, 3) : heatmap}
-        </div>
-      );
-    };
+    const slicer = () => {
+      if (!slice) {
+        return (
+          <div className="col-span-1 bg-white h-auto p-1 px-2">
+            {heatmap()}
+          </div>
+        );
+      } else if (parseInt(props.size, 10) < 11) {
+        return (
+          <div className="col-span-1 bg-white h-[86px] p-1 px-2">
+            {heatmap().slice(0, 3)}
+          </div>
+        );
+      } else if (parseInt(props.size, 10) < 21) {
+        return (
+          <div className="col-span-1 bg-white h-[88px] p-1 px-2">
+            {heatmap().slice(0, 3)}
+          </div>
+        );
+      } else {
+        return (
+          <div className="col-span-1 bg-white h-[89px] p-1 px-2">
+            {heatmap().slice(0, 3)}
+          </div>
+        );
+      };
+    }
+    return slicer();
   }
 
+
   return (
-      <div>
-        {props && <div>{Render()}</div>}
-      </div>
+    <div>
+      {props && <div>{Render()}</div>}
+    </div>
   );
 }
 

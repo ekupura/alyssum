@@ -5,9 +5,11 @@ import numpy as np
 from tqdm import tqdm
 from scipy.cluster.hierarchy import *
 import matplotlib.pyplot as plt
+import os
+from pathlib import Path
+from pprint import pprint
 
-
-init_setting = "Y14_1213_A_R"
+init_setting = "Y14_1213_100_A_R"
 init_size = 10
 init_type = "train"
 
@@ -40,3 +42,14 @@ class ClusteringBeta:
     def do_query(self, distance):
         # clustering
         return pd.merge(self.cluster_df, self.data_df, on="Idx")
+
+    def update_df(self, df, problematic_list):
+        for problematic_cluster in problematic_list:
+            df["Human"] = (df["Number"] == problematic_cluster + 1)
+        return df
+    
+    def write_df(self, df, setting=init_setting, data_type=init_type):
+        dir_path = Path("data/updated") / data_type / setting
+        os.makedirs(dir_path, exist_ok=True)
+        file_path = dir_path / "updated.xz.pkl"
+        df.to_pickle(file_path, compression="xz")

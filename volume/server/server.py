@@ -27,6 +27,12 @@ class Item(BaseModel):
     mask: bool
     data_type: str
 
+class UpdateItem(BaseModel):
+    size: Union[str, int]
+    setting: str
+    problematic_list: list
+    data_type: str
+
 
 @app.get("/")
 async def root():
@@ -42,12 +48,13 @@ def distance(item: Item):
 
     # process query
     result_df = beta.do_query(distance=size)
-    color = result_df["Color"].to_list() if not item.mask else result_df["Mask_Color"].to_list()
+    color = result_df["Color"].to_list()
+    just = result_df["Mask_Color"].to_list()
     cluster_size = max(result_df["Number"].to_list())
 
     # make response
     responses = {"cluster": result_df["Number"].to_list(), "token": result_df["Token"].to_list(),
-                 "color": color, "max": cluster_size}
+                 "color": color, "max": cluster_size, "just": just}
     return responses
 
 
@@ -71,3 +78,14 @@ def get_dendrogram(data_type: str, setting: str, size: Union[int, str] = 3):
     # file_path = "data/figure/{}/{}_counter_dendrogram.png".format(size, setting)
     file_path = "data/{}/{}/{}/dendrogram.png".format(data_type, setting, size)
     return FileResponse(file_path, media_type="image/png")
+
+@app.post("/update")
+def update_dataset(item: UpdateItem):
+    # setting
+    beta.load_sentence_data(setting=item.setting, data_type=item.data_type)
+    beta.load_cluster_data(setting=item.setting, size=item.size, data_type=item.data_type)
+    result_df = beta.do_query(distance=item.size)
+
+    # update & write
+    update_df = beta.update_df(result_df, item.problematic_list)
+    beta.write_df(update_df, data_type=item.data_type, setting=item.setting)

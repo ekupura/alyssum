@@ -8,9 +8,11 @@ export function Inbox(props){
   const [result, setResult] = useState();
   const [clusterSize, setClusterSize] = useState(10);
   const [mask, setMask] = useState(false);
-  const [setting, setSetting] = useState('Y14_1213_A_R');
+  const [setting, setSetting] = useState('Y14_1213_100_A_R');
   const [files, setFiles] = useState(['']);
   const [dataType, setDataType] = useState('train');
+  const [click, setClick] = useState(false);
+  const [clickList, setClickList] = useState([]);
 
   const requestOptions = {
     method: 'POST',
@@ -26,6 +28,7 @@ export function Inbox(props){
       'data_type': dataType,
     }),
   };
+
   const requestFileOptions = {
     method: 'GET',
     headers: {
@@ -33,6 +36,21 @@ export function Inbox(props){
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     },
+  };
+
+  const pushOptions = {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, */*',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
+    body: JSON.stringify({
+      'size': clusterSize,
+      'setting': setting,
+      'data_type': dataType,
+      'problematic_list': clickList,
+    }),
   };
 
   useEffect(() => {
@@ -116,9 +134,19 @@ export function Inbox(props){
   const renderHeatmapList = () => {
     const list = [];
     for (let idx = 0; idx < result.max; idx++) {
-      list.push(
-        <Heatmap result={result} number={idx + 1} size={clusterSize}/>
-      );
+      if (clickList.includes(idx)) {
+        list.push(
+          <div className="border-2 border-rose-500" onContextMenu={(e) => handleDisabled(idx, e)}>
+            <Heatmap result={result} number={idx + 1} size={clusterSize} mask={mask}/>
+          </div>
+        );
+      } else {
+        list.push(
+          <div className="border-2 border-gray-200" onContextMenu={(e) => handleEnabled(idx, e)}>
+            <Heatmap result={result} number={idx + 1} size={clusterSize} mask={mask}/>
+          </div>
+        );
+      };
     }
     return list;
   };
@@ -133,6 +161,24 @@ export function Inbox(props){
         {f}
       </button>
     ))
+  }
+
+  const handleEnabled = (idx, e) => {
+    e.preventDefault();
+    setClickList([...clickList, idx])
+    console.log(`Right button clicked, list=${clickList}`);
+  }
+
+  const handleDisabled = (idx, e) => {
+    e.preventDefault();
+    setClickList(clickList.filter(item => item !== idx))
+    console.log(`Right button clicked, list=${clickList}`);
+  }
+
+  const handleUpdate = (e) => {
+    const updateUrl = "/update";
+    console.log("TBD");
+    fetch(updateUrl, pushOptions)
   }
 
   return (
@@ -161,26 +207,32 @@ export function Inbox(props){
       </div>
       <div className="flex flex-col w-full">
         <div className="flex flex-row items-center flex-shrink-0 h-16 px-8 border-b border-gray-300">
-          <div className="flex-none w-2/3">
+          <div className="flex-none w-1/2">
             <h1 className="text-lg font-medium">{setting}</h1>
           </div>
-          <div className="flex-none items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-white">
-            <label
-              for="customRange3"
-              class="inline-block text-neutral-700 dark:text-neutral-200"
-            >Size={clusterSize}
-            </label>
-            <input type="range" className="items-center justify-center h-4 w-32 px-2 ml-auto text-sm font-medium rounded hover:bg-gray-300"
-              min="2" max="30" onChange={GetClusterSize} id="customRange3"/>
+          <div className="flex flex-row flex-none w-1/2 justify-end">
+            <div className="flex-none items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-white">
+              <label
+                for="customRange3"
+                class="inline-block text-neutral-700 dark:text-neutral-200"
+              >Size={clusterSize}
+              </label>
+              <input type="range" className="h-4 w-32 px-2 ml-auto text-sm font-medium rounded hover:bg-gray-300"
+                min="2" max="30" onChange={GetClusterSize} id="customRange3" />
+            </div>
+            <button className="flex-none h-10 w-32 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+              onClick={SetType}>
+              {dataType}
+            </button>
+            <button className="flex-none h-10 w-48 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+              onClick={SetMask}>
+              Justification Cue
+            </button>
+            <button className="flex-none h-10 w-48 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
+              onClick={handleUpdate}>
+              Update to dataset
+            </button>
           </div>
-          <button className="flex-none items-center justify-center h-10 w-32 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
-            onClick={SetType}>
-            {dataType}
-          </button>
-          <button className="flex-none items-center justify-center h-10 w-48 px-4 ml-2 text-sm font-medium bg-gray-200 rounded hover:bg-gray-300"
-            onClick={SetMask}>
-            Justification Cue
-          </button>
         </div>
         <div className="flex flex-row h-full">
           <div className="flex flex-col w-56 border-r border-gray-300">
@@ -200,7 +252,7 @@ export function Inbox(props){
               </div>
             </div>
             <div className="flex flex-col flex-1 bg-gray-0">
-              <div className="flex-1 p-4 bg-gray-200 pt-8">
+              <div className="flex-1 p-4 bg-gray-200 pt-6">
                 <div className="grid grid-cols-1 gap-2">
                   {result && renderHeatmapList()}
                 </div>
